@@ -16,9 +16,9 @@ public class FilmController {
 
     @PostMapping
     public Film addMovie(@RequestBody Film film) {
-        if (!(film.getName().isEmpty())) {
+        if (film.getName() != null && !(film.getName().isBlank())) {
           if (film.getDescription().length() <= 200) {
-              if (film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28))) {
+              if (!(film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
                   if (film.getDuration() > 0) {
                       film.setId(currentID++);
                       films.put(film.getId(), film);

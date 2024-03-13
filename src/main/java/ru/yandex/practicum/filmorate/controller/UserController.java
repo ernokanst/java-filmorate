@@ -16,10 +16,10 @@ public class UserController {
 
     @PostMapping
     public User addUser(@RequestBody User user) {
-        if (user.getEmail().contains("@") && !(user.getLogin().isEmpty()) && !(user.getLogin().contains(" ")) &&
-        user.getBirthday().isBefore(LocalDate.now())) {
+        if (user.getEmail() != null && user.getEmail().contains("@") && user.getLogin() != null &&
+                !(user.getLogin().isBlank()) && !(user.getLogin().contains(" ")) && !(user.getBirthday().isAfter(LocalDate.now()))) {
             if (user.getName() == null) {
-                user.setName("common");
+                user.setName(user.getLogin());
             }
             user.setId(currentID++);
             users.put(user.getId(), user);
