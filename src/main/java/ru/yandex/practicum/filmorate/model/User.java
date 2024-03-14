@@ -13,7 +13,7 @@ public class User {
     private String email;
     private String login;
     private String name;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
     public User(String email, String login, String name, LocalDate birthday) {
