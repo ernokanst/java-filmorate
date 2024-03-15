@@ -9,7 +9,7 @@ import java.time.LocalDate;
  */
 @Data
 public class Film {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd")

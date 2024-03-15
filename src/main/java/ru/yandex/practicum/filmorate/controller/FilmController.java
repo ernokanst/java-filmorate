@@ -4,51 +4,38 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
-import java.time.LocalDate;
 import java.util.*;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private HashMap<Integer, Film> films = new HashMap<>();
-    private int currentID = 1;
+    private Map<Integer, Film> films = new LinkedHashMap<>();
+    private int currentId = 1;
 
     @PostMapping
-    public Film addMovie(@RequestBody Film film) {
-        if (film.getName() != null && !(film.getName().isBlank())) {
-          if (film.getDescription().length() <= 200) {
-              if (!(film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
-                  if (film.getDuration() > 0) {
-                      film.setId(currentID++);
-                      films.put(film.getId(), film);
-                  } else {
-                      throw new ValidationException("Продолжительность фильма не может быть отрицательной");
-                  }
-              } else {
-                  throw new ValidationException("Фильм не может быть старше 1895 года");
-              }
-          } else {
-              throw new ValidationException("Описание должно быть меньше 200 символов");
-          }
-        } else {
-            throw new ValidationException("Название не должно быть пустым");
+    public Film add(@RequestBody Film film) {
+        if (ValidateService.checkFilm(film)) {
+            film.setId(currentId++);
+            films.put(film.getId(), film);
+            return film;
         }
-        return film;
+        throw new ValidationException("Ошибка создания фильма");
     }
 
     @PutMapping
-    public Film updateMovie(@RequestBody Film film) {
-        if (films.containsKey(film.getId())) {
-            films.replace(film.getId(), film);
-        } else {
-            throw new ValidationException("Ошибка обновления фильма");
+    public Film update(@RequestBody Film film) {
+        if (ValidateService.checkFilm(film)) {
+            if (films.containsKey(film.getId())) {
+                films.replace(film.getId(), film);
+                return film;
+            }
         }
-        return film;
+        throw new ValidationException("Ошибка обновления фильма");
     }
 
     @GetMapping
-    public List<Film> getMovie() {
+    public List<Film> get() {
         return new ArrayList<>(films.values());
     }
 }
