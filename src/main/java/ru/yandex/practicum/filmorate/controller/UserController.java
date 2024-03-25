@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.service.ValidateService;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
@@ -12,29 +14,35 @@ import java.util.*;
 public class UserController {
     private Map<Integer, User> users = new LinkedHashMap<>();
     private int currentId = 1;
+    private ValidateService validator;
+
+    @Autowired
+    public UserController(ValidateService validateService) {
+        validator = validateService;
+    }
 
     @PostMapping
     public User add(@RequestBody User user) {
-        if (ValidateService.checkUser(user)) {
+        if (validator.checkUser(user)) {
             if (user.getName() == null) {
                 user.setName(user.getLogin());
             }
             user.setId(currentId++);
             users.put(user.getId(), user);
-            return user;
         }
-        throw new ValidationException("Ошибка добавления пользователя");
+        return user;
     }
 
     @PutMapping
-    public User update(@RequestBody User user) {
-        if (ValidateService.checkUser(user)) {
+    public User update(@RequestBody User user, HttpServletResponse response) {
+        if (validator.checkUser(user)) {
             if (users.containsKey(user.getId())) {
                 users.replace(user.getId(), user);
-                return user;
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         }
-        throw new ValidationException("Ошибка обновления пользователя");
+        return user;
     }
 
     @GetMapping

@@ -6,14 +6,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.service.ValidateService;
 
 import java.time.LocalDate;
 
 @SpringBootTest
-class FilmorateApplicationTests {
+class FilmTest {
 
-	FilmController films = new FilmController();
-	UserController users = new UserController();
+	ValidateService validateService = new ValidateService();
+	FilmController films = new FilmController(validateService);
 
 	@Test
 	public void filmTest() {
@@ -41,33 +42,5 @@ class FilmorateApplicationTests {
 		assertThrows(ValidationException.class, () -> films.add(film4));
 		film4.setDuration(1);
 		assertDoesNotThrow(() -> films.add(film4));
-	}
-
-	@Test
-	public void userTest() {
-		User user1 = new User(null, "user", "John Doe", LocalDate.of(2000, 1, 1));
-		assertThrows(ValidationException.class, () -> users.add(user1));
-		user1.setEmail("");
-		assertThrows(ValidationException.class, () -> users.add(user1));
-		user1.setEmail("email");
-		assertThrows(ValidationException.class, () -> users.add(user1));
-		user1.setEmail("email@email.com");
-		assertDoesNotThrow(() -> users.add(user1));
-		User user2 = new User("email@email.com", null, "John Doe", LocalDate.of(2000, 1, 1));
-		assertThrows(ValidationException.class, () -> users.add(user2));
-		user2.setLogin("");
-		assertThrows(ValidationException.class, () -> users.add(user2));
-		user2.setLogin(" ");
-		assertThrows(ValidationException.class, () -> users.add(user2));
-		user2.setLogin("a user");
-		assertThrows(ValidationException.class, () -> users.add(user2));
-		user2.setLogin("user");
-		user2.setName(null);
-		users.add(user2);
-		assertEquals(users.get().stream().filter(u -> u.getId() == 2).findFirst().get().getName(), user2.getLogin());
-		User user3 = new User("email@email.com", "user", "John Doe", LocalDate.of(2222, 2, 22));
-		assertThrows(ValidationException.class, () -> users.add(user3));
-		user3.setBirthday(LocalDate.now());
-		assertDoesNotThrow(() -> users.add(user3));
 	}
 }
