@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.ValidateService;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import org.springframework.security.acls.model.NotFoundException;
 
 @RestController
 @RequestMapping("/films")
@@ -23,22 +23,19 @@ public class FilmController {
 
     @PostMapping
     public Film add(@RequestBody Film film) {
-        if (validator.checkFilm(film)) {
-            film.setId(currentId++);
-            films.put(film.getId(), film);
-        }
+        validator.checkFilm(film);
+        film.setId(currentId++);
+        films.put(film.getId(), film);
         return film;
     }
 
     @PutMapping
-    public Film update(@RequestBody Film film, HttpServletResponse response) {
-        if (validator.checkFilm(film)) {
-            if (films.containsKey(film.getId())) {
-                films.replace(film.getId(), film);
-            } else {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
+    public Film update(@RequestBody Film film) {
+        validator.checkFilm(film);
+        if (!films.containsKey(film.getId())) {
+            throw new NotFoundException("Фильм не найден");
         }
+        films.replace(film.getId(), film);
         return film;
     }
 

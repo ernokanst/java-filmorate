@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.acls.model.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.ValidateService;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
@@ -23,25 +23,19 @@ public class UserController {
 
     @PostMapping
     public User add(@RequestBody User user) {
-        if (validator.checkUser(user)) {
-            if (user.getName() == null) {
-                user.setName(user.getLogin());
-            }
-            user.setId(currentId++);
-            users.put(user.getId(), user);
-        }
+        validator.checkUser(user);
+        user.setId(currentId++);
+        users.put(user.getId(), user);
         return user;
     }
 
     @PutMapping
-    public User update(@RequestBody User user, HttpServletResponse response) {
-        if (validator.checkUser(user)) {
-            if (users.containsKey(user.getId())) {
-                users.replace(user.getId(), user);
-            } else {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
+    public User update(@RequestBody User user) {
+        validator.checkUser(user);
+        if (!(users.containsKey(user.getId()))) {
+            throw new NotFoundException("Пользователь не найден");
         }
+        users.replace(user.getId(), user);
         return user;
     }
 

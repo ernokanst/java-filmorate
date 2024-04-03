@@ -7,7 +7,8 @@ import java.time.LocalDate;
 
 @Component
 public class ValidateService {
-    public boolean checkFilm(Film film) {
+
+    public void checkFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             throw new ValidationException("Название не должно быть пустым");
         }
@@ -20,10 +21,9 @@ public class ValidateService {
         if (film.getDuration() < 1) {
             throw new ValidationException("Продолжительность фильма не может быть отрицательной");
         }
-        return true;
     }
 
-    public boolean checkUser(User user) {
+    public void checkUser(User user) {
         if (user.getEmail() == null || user.getLogin() == null) {
             throw new ValidationException("Имя и логин не могут быть пустыми");
         }
@@ -36,6 +36,8 @@ public class ValidateService {
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("День рождения не может быть в будущем");
         }
-        return true;
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
     }
 }

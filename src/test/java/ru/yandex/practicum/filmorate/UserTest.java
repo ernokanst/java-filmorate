@@ -18,27 +18,44 @@ public class UserTest {
     UserController users = new UserController(validateService);
 
     @Test
-    public void userTest() {
-        User user1 = new User(null, "user", "John Doe", LocalDate.of(2000, 1, 1));
-        assertThrows(ValidationException.class, () -> users.add(user1));
-        user1.setEmail("");
-        assertThrows(ValidationException.class, () -> users.add(user1));
-        user1.setEmail("email");
-        assertThrows(ValidationException.class, () -> users.add(user1));
-        user1.setEmail("email@email.com");
-        assertDoesNotThrow(() -> users.add(user1));
-        User user2 = new User("email@email.com", null, "John Doe", LocalDate.of(2000, 1, 1));
-        assertThrows(ValidationException.class, () -> users.add(user2));
-        user2.setLogin("");
-        assertThrows(ValidationException.class, () -> users.add(user2));
-        user2.setLogin(" ");
-        assertThrows(ValidationException.class, () -> users.add(user2));
-        user2.setLogin("a user");
-        assertThrows(ValidationException.class, () -> users.add(user2));
-        user2.setLogin("user");
-        user2.setName(null);
-        users.add(user2);
-        assertEquals(users.get().stream().filter(u -> u.getId() == 2).findFirst().get().getName(), user2.getLogin());
+    public void allCorrectTest() {
+        User user = new User("email@email.com", "user", "John Doe", LocalDate.of(2000, 1, 1));
+        assertDoesNotThrow(() -> users.add(user));
+    }
+
+    @Test
+    public void wrongEmailTest() {
+        User user = new User(null, "user", "John Doe", LocalDate.of(2000, 1, 1));
+        assertThrows(ValidationException.class, () -> users.add(user));
+        user.setEmail("");
+        assertThrows(ValidationException.class, () -> users.add(user));
+        user.setEmail("email");
+        assertThrows(ValidationException.class, () -> users.add(user));
+        user.setEmail("email@email.com");
+        assertDoesNotThrow(() -> users.add(user));
+    }
+
+    @Test
+    public void wrongLoginTest() {
+        User user = new User("email@email.com", null, "John Doe", LocalDate.of(2000, 1, 1));
+        assertThrows(ValidationException.class, () -> users.add(user));
+        user.setLogin("");
+        assertThrows(ValidationException.class, () -> users.add(user));
+        user.setLogin(" ");
+        assertThrows(ValidationException.class, () -> users.add(user));
+        user.setLogin("a user");
+        assertThrows(ValidationException.class, () -> users.add(user));
+    }
+
+    @Test
+    public void noNameTest() {
+        User user = new User("email@email.com", "user", null, LocalDate.of(2000, 1, 1));
+        users.add(user);
+        assertEquals(users.get().stream().filter(u -> u.getId() == 1).findFirst().get().getName(), user.getLogin());
+    }
+
+    @Test
+    public void wrongBirthdateTest() {
         User user3 = new User("email@email.com", "user", "John Doe", LocalDate.of(2222, 2, 22));
         assertThrows(ValidationException.class, () -> users.add(user3));
         user3.setBirthday(LocalDate.now());
