@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +11,13 @@ import org.springframework.security.acls.model.NotFoundException;
 @RestController
 @RequestMapping("/films")
 @Slf4j
-public class FilmController {
+public class InMemoryFilmStorage implements FilmStorage{
     private Map<Integer, Film> films = new LinkedHashMap<>();
     private int currentId = 1;
     private ValidateService validator;
 
     @Autowired
-    public FilmController(ValidateService validateService) {
+    public InMemoryFilmStorage(ValidateService validateService) {
         validator = validateService;
     }
 
@@ -43,4 +43,5 @@ public class FilmController {
     public List<Film> get() {
         return new ArrayList<>(films.values());
     }
+
 }

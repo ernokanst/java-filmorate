@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +11,13 @@ import java.util.*;
 @RestController
 @RequestMapping("/users")
 @Slf4j
-public class UserController {
+public class InMemoryUserStorage implements UserStorage {
     private Map<Integer, User> users = new LinkedHashMap<>();
     private int currentId = 1;
     private ValidateService validator;
 
     @Autowired
-    public UserController(ValidateService validateService) {
+    public InMemoryUserStorage(ValidateService validateService) {
         validator = validateService;
     }
 
