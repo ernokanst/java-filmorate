@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Component
 public class ValidateService {
 
-    public void checkFilm(Film film) {
+    public void checkFilm(Film film) throws ValidationException {
         if (film.getName() == null || film.getName().isBlank()) {
             throw new ValidationException("Название не должно быть пустым");
         }
@@ -23,7 +23,7 @@ public class ValidateService {
         }
     }
 
-    public void checkUser(User user) {
+    public void checkUser(User user) throws ValidationException {
         if (user.getEmail() == null || user.getLogin() == null) {
             throw new ValidationException("Имя и логин не могут быть пустыми");
         }

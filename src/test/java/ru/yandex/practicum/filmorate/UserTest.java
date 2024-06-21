@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.user.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -13,7 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserTest {
 
     ValidateService validateService = new ValidateService();
-    UserStorage users = new InMemoryUserStorage(validateService);
+    UserService userService = new UserService();
+    UserStorage users = new InMemoryUserStorage(validateService, userService);
 
     @Test
     public void allCorrectTest() {

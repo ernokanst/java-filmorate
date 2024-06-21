@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.*;
@@ -13,7 +14,8 @@ import java.time.LocalDate;
 class FilmTest {
 
 	ValidateService validateService = new ValidateService();
-	FilmStorage films = new InMemoryFilmStorage(validateService);
+	FilmService filmService = new FilmService();
+	FilmStorage films = new InMemoryFilmStorage(validateService, filmService);
 
 	@Test
 	public void allCorrectTest() {
