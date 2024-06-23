@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.ValidateService;
 import java.util.*;
-import org.springframework.security.acls.model.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 @RestController
 @RequestMapping("/films")
@@ -16,14 +17,12 @@ import org.springframework.security.acls.model.NotFoundException;
 public class InMemoryFilmStorage implements FilmStorage{
     private Map<Integer, Film> films = new LinkedHashMap<>();
     private int currentId = 1;
-    private ValidateService validator;
-    private FilmService service;
-
     @Autowired
-    public InMemoryFilmStorage(ValidateService validateService, FilmService filmService) {
-        validator = validateService;
-        service = filmService;
-    }
+    private ValidateService validator;
+    @Autowired
+    private FilmService service;
+    @Autowired
+    private InMemoryUserStorage users;
 
     @SneakyThrows
     @PostMapping
@@ -63,6 +62,9 @@ public class InMemoryFilmStorage implements FilmStorage{
         if (!films.containsKey(id)) {
             throw new NotFoundException("Фильм не найден");
         }
+        if (!users.getUsers().containsKey(userId)) {
+            throw new NotFoundException("Пользователь не найден");
+        }
         service.addLike(films.get(id), userId);
     }
 
@@ -71,11 +73,14 @@ public class InMemoryFilmStorage implements FilmStorage{
         if (!films.containsKey(id)) {
             throw new NotFoundException("Фильм не найден");
         }
+        if (!users.getUsers().containsKey(userId)) {
+            throw new NotFoundException("Пользователь не найден");
+        }
         service.removeLike(films.get(id), userId);
     }
 
-    @GetMapping("/films/popular?count={count}")
-    public List<Film> getMostPopular(@PathVariable Integer count) {
+    @GetMapping("/popular")
+    public List<Film> getMostPopular(@RequestParam Integer count) {
         int c = 10;
         if (count != null) {
             c = count;

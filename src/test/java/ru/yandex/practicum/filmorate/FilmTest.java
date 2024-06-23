@@ -13,9 +13,7 @@ import java.time.LocalDate;
 @SpringBootTest
 class FilmTest {
 
-	ValidateService validateService = new ValidateService();
-	FilmService filmService = new FilmService();
-	FilmStorage films = new InMemoryFilmStorage(validateService, filmService);
+	FilmStorage films = new InMemoryFilmStorage();
 
 	@Test
 	public void allCorrectTest() {

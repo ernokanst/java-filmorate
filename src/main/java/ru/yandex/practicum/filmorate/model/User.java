@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -23,6 +24,7 @@ public class User {
         this.login = login;
         this.name = name;
         this.birthday = birthday;
+        friends = new HashSet<>();
     }
 
     public void addFriend(Integer id) {

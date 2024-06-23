@@ -13,9 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class UserTest {
 
-    ValidateService validateService = new ValidateService();
-    UserService userService = new UserService();
-    UserStorage users = new InMemoryUserStorage(validateService, userService);
+    UserStorage users = new InMemoryUserStorage();
 
     @Test
     public void allCorrectTest() {
