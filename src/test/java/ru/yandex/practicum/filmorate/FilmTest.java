@@ -2,19 +2,21 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.controller.*;
+import ru.yandex.practicum.filmorate.storage.film.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.*;
-import ru.yandex.practicum.filmorate.service.ValidateService;
-
 import java.time.LocalDate;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 class FilmTest {
 
-	ValidateService validateService = new ValidateService();
-	FilmController films = new FilmController(validateService);
+	@Autowired
+	InMemoryFilmStorage films;
 
 	@Test
 	public void allCorrectTest() {
