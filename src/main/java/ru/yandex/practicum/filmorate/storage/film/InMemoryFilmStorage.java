@@ -14,7 +14,7 @@ import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 @RestController
 @RequestMapping("/films")
 @Slf4j
-public class InMemoryFilmStorage implements FilmStorage{
+public class InMemoryFilmStorage implements FilmStorage {
     private Map<Integer, Film> films = new LinkedHashMap<>();
     private int currentId = 1;
     @Autowired
