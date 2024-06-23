@@ -2,6 +2,9 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.storage.film.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -9,9 +12,11 @@ import ru.yandex.practicum.filmorate.model.*;
 import java.time.LocalDate;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 class FilmTest {
 
-	FilmStorage films = new InMemoryFilmStorage();
+	@Autowired
+	InMemoryFilmStorage films;
 
 	@Test
 	public void allCorrectTest() {
