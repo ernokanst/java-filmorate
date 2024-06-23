@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 
