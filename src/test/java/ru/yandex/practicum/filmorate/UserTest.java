@@ -2,11 +2,9 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.user.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.ValidateService;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
