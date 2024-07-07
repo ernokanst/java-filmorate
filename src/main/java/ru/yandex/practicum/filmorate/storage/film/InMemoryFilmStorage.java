@@ -50,7 +50,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new ArrayList<>(films.values());
     }
 
-    public Film getFilm( Integer id) {
+    public Film getFilm(Integer id) {
         if (!films.containsKey(id)) {
             throw new NotFoundException("Фильм не найден");
         }
