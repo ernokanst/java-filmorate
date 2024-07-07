@@ -1,22 +1,21 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.*;
-import java.util.Collection;
-import java.util.List;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import org.springframework.context.ApplicationContext;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
-    public void addLike(Film film, Integer user) {
-        film.addLike(user);
-    }
+    @Autowired
+    private ApplicationContext context;
 
-    public void removeLike(Film film, Integer user) {
-        film.removeLike(user);
-    }
-
-    public List<Film> getMostPopular(Collection<Film> films, int count) {
-        return films.stream().sorted((x1, x2) -> x2.getLikes().size() - x1.getLikes().size()).limit(count).collect(Collectors.toList());
+    public List<Film> getMostPopular(int count) {
+        List<Film> films = context.getBean(InMemoryFilmStorage.class).get();
+        Map<Integer, Set<Integer>> likes = context.getBean(InMemoryFilmStorage.class).getLikes();
+        return films.stream().sorted((x1, x2) -> likes.get(x2.getId()).size() - likes.get(x1.getId()).size()).limit(count).collect(Collectors.toList());
     }
 }
