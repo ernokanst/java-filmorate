@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class UserService {
     @Autowired
     private ApplicationContext context;
-    
+
     public List<Integer> getMutuals(Integer user1, Integer user2) {
         Map<Integer, Set<Integer>> friends = context.getBean(InMemoryUserStorage.class).getFriends();
         return friends.get(user1).stream().filter(x -> friends.get(user2).contains(x)).collect(Collectors.toList());
