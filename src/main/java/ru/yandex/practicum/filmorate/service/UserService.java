@@ -1,19 +1,22 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-import org.springframework.context.ApplicationContext;
-import java.util.*;
-import java.util.stream.Collectors;
+import ru.yandex.practicum.filmorate.model.User;
+import java.util.List;
 
-@Service
-public class UserService {
-    @Autowired
-    private ApplicationContext context;
+public interface UserService {
+    User add(User user);
 
-    public List<Integer> getMutuals(Integer user1, Integer user2) {
-        Map<Integer, Set<Integer>> friends = context.getBean(InMemoryUserStorage.class).getFriends();
-        return friends.get(user1).stream().filter(x -> friends.get(user2).contains(x)).collect(Collectors.toList());
-    }
+    User update(User user);
+
+    List<User> get();
+
+    User getUser(Integer id);
+
+    void addFriends(Integer id, Integer friendId);
+
+    void deleteFriends(Integer id, Integer friendId);
+
+    List<User> getFriends(Integer id);
+
+    List<User> getMutuals(Integer id, Integer otherId);
 }

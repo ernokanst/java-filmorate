@@ -1,28 +1,25 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
     @Autowired
-    private InMemoryFilmStorage films;
+    private FilmService films;
 
-    @SneakyThrows
     @PostMapping
     public Film add(@RequestBody Film film) {
         films.add(film);
         return film;
     }
 
-    @SneakyThrows
     @PutMapping
     public Film update(@RequestBody Film film) {
         films.update(film);
@@ -36,7 +33,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable Integer id) {
-        return films.getFilm(id);
+        return films.get(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -51,6 +48,9 @@ public class FilmController {
 
     @GetMapping("/popular")
     public List<Film> getMostPopular(@RequestParam Integer count) {
+        if (count == null) {
+            count = 10;
+        }
         return films.getMostPopular(count);
     }
 }

@@ -1,29 +1,25 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
-
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
     @Autowired
-    private InMemoryUserStorage users;
+    private UserService users;
 
-    @SneakyThrows
     @PostMapping
     public User add(@RequestBody User user) {
         users.add(user);
         return user;
     }
 
-    @SneakyThrows
     @PutMapping
     public User update(@RequestBody User user) {
         users.update(user);
