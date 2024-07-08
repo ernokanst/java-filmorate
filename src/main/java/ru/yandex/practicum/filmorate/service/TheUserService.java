@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.*;
 
 @Service
-public class TheUserService implements UserService{
+public class TheUserService implements UserService {
     @Autowired
     private UserStorage users;
     @Autowired
