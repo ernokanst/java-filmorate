@@ -25,8 +25,8 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    public Map<Integer, User> get() {
-        return users;
+    public List<User> get() {
+        return new ArrayList<>(users.values());
     }
 
     public User get(Integer id) {

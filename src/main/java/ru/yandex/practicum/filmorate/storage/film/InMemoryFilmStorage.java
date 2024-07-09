@@ -25,8 +25,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    public Map<Integer, Film>  get() {
-        return films;
+    public List<Film> get() {
+        return new ArrayList<>(films.values());
     }
 
     public Film get(Integer id) {

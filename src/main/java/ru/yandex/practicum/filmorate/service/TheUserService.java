@@ -10,59 +10,59 @@ import java.util.*;
 @Service
 public class TheUserService implements UserService {
     @Autowired
-    private UserStorage users;
+    private UserStorage userStorage;
     @Autowired
-    ValidateService validator;
+    ValidateService validateService;
 
     public User add(User user) {
-        validator.checkUser(user);
-        return users.add(user);
+        validateService.checkUser(user);
+        return userStorage.add(user);
     }
 
     public User update(User user) {
-        validator.checkUser(user);
-        if (!(users.get().containsKey(user.getId()))) {
+        validateService.checkUser(user);
+        if (userStorage.get(user.getId()) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        return users.update(user);
+        return userStorage.update(user);
     }
 
     public List<User> get() {
-        return new ArrayList<>(users.get().values());
+        return userStorage.get();
     }
 
     public User getUser(Integer id) {
-        if (!users.get().containsKey(id)) {
+        if (userStorage.get(id) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        return users.get(id);
+        return userStorage.get(id);
     }
 
     public void addFriends(Integer id, Integer friendId) {
-        if (!(users.get().containsKey(id) && users.get().containsKey(friendId))) {
+        if (userStorage.get(id) == null || userStorage.get(friendId) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        users.addFriends(id, friendId);
+        userStorage.addFriends(id, friendId);
     }
 
     public void deleteFriends(Integer id, Integer friendId) {
-        if (!(users.get().containsKey(id) && users.get().containsKey(friendId))) {
+        if (userStorage.get(id) == null || userStorage.get(friendId) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        users.deleteFriends(id, friendId);
+        userStorage.deleteFriends(id, friendId);
     }
 
     public List<User> getFriends(Integer id) {
-        if (!users.get().containsKey(id)) {
+        if (userStorage.get(id) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        return users.getFriends(id);
+        return userStorage.getFriends(id);
     }
 
     public List<User> getMutuals(Integer id, Integer otherId) {
-        if (!(users.get().containsKey(id) && users.get().containsKey(otherId))) {
+        if (userStorage.get(id) == null || userStorage.get(otherId) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        return users.getMutuals(id, otherId);
+        return userStorage.getMutuals(id, otherId);
     }
 }

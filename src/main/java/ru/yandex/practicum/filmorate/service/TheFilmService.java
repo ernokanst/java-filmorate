@@ -11,57 +11,57 @@ import java.util.*;
 @Service
 public class TheFilmService implements FilmService {
     @Autowired
-    private FilmStorage films;
+    private FilmStorage filmStorage;
     @Autowired
-    private ValidateService validator;
+    private ValidateService validateService;
     @Autowired
-    private UserStorage users;
+    private UserStorage userStorage;
 
     public Film add(Film film) {
-        validator.checkFilm(film);
-        return films.add(film);
+        validateService.checkFilm(film);
+        return filmStorage.add(film);
     }
 
     public Film update(Film film) {
-        validator.checkFilm(film);
-        if (!films.get().containsKey(film.getId())) {
+        validateService.checkFilm(film);
+        if (filmStorage.get(film.getId()) == null) {
             throw new NotFoundException("Фильм не найден");
         }
-        return films.update(film);
+        return filmStorage.update(film);
     }
 
     public List<Film> get() {
-        return new ArrayList<>(films.get().values());
+        return filmStorage.get();
     }
 
     public Film get(Integer id) {
-        if (!films.get().containsKey(id)) {
+        if (filmStorage.get(id) == null) {
             throw new NotFoundException("Фильм не найден");
         }
-        return films.get(id);
+        return filmStorage.get(id);
     }
 
     public void addLike(Integer id, Integer userId) {
-        if (!films.get().containsKey(id)) {
+        if (filmStorage.get(id) == null) {
             throw new NotFoundException("Фильм не найден");
         }
-        if (!users.get().containsKey(userId)) {
+        if (userStorage.get(userId) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        films.addLike(id, userId);
+        filmStorage.addLike(id, userId);
     }
 
     public void deleteLike(Integer id, Integer userId) {
-        if (!films.get().containsKey(id)) {
+        if (filmStorage.get(id) == null) {
             throw new NotFoundException("Фильм не найден");
         }
-        if (!users.get().containsKey(userId)) {
+        if (userStorage.get(userId) == null) {
             throw new NotFoundException("Пользователь не найден");
         }
-        films.deleteLike(id, userId);
+        filmStorage.deleteLike(id, userId);
     }
 
     public List<Film> getMostPopular(Integer count) {
-        return films.getMostPopular(count);
+        return filmStorage.getMostPopular(count);
     }
 }

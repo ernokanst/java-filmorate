@@ -12,47 +12,47 @@ import ru.yandex.practicum.filmorate.service.UserService;
 @Slf4j
 public class UserController {
     @Autowired
-    private UserService users;
+    private UserService userService;
 
     @PostMapping
     public User add(@RequestBody User user) {
-        users.add(user);
+        userService.add(user);
         return user;
     }
 
     @PutMapping
     public User update(@RequestBody User user) {
-        users.update(user);
+        userService.update(user);
         return user;
     }
 
     @GetMapping
     public List<User> get() {
-        return users.get();
+        return userService.get();
     }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable Integer id) {
-        return users.getUser(id);
+        return userService.getUser(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
-        users.addFriends(id, friendId);
+        userService.addFriends(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
-        users.deleteFriends(id, friendId);
+        userService.deleteFriends(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
     public List<User> getFriends(@PathVariable Integer id) {
-        return users.getFriends(id);
+        return userService.getFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getMutuals(@PathVariable Integer id, @PathVariable Integer otherId) {
-        return users.getMutuals(id, otherId);
+        return userService.getMutuals(id, otherId);
     }
 }

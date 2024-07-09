@@ -12,38 +12,38 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 @Slf4j
 public class FilmController {
     @Autowired
-    private FilmService films;
+    private FilmService filmService;
 
     @PostMapping
     public Film add(@RequestBody Film film) {
-        films.add(film);
+        filmService.add(film);
         return film;
     }
 
     @PutMapping
     public Film update(@RequestBody Film film) {
-        films.update(film);
+        filmService.update(film);
         return film;
     }
 
     @GetMapping
     public List<Film> get() {
-        return films.get();
+        return filmService.get();
     }
 
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable Integer id) {
-        return films.get(id);
+        return filmService.get(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable Integer id, @PathVariable Integer userId) {
-        films.addLike(id, userId);
+        filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
-        films.deleteLike(id, userId);
+        filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/popular")
@@ -51,6 +51,6 @@ public class FilmController {
         if (count == null) {
             count = 10;
         }
-        return films.getMostPopular(count);
+        return filmService.getMostPopular(count);
     }
 }
