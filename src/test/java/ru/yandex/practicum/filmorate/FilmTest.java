@@ -22,6 +22,18 @@ class FilmTest {
 	}
 
 	@Test
+	public void testMostPopular() {
+		Film film1 = new Film("Movie 1", "A 1st movie", LocalDate.now(), 60);
+		Film film2 = new Film("Movie 2", "A 2nd movie", LocalDate.now(), 30);
+		Film film3 = new Film("Movie 3", "A 3rd movie", LocalDate.now(), 120);
+		films.add(film1);
+		films.add(film2);
+		films.add(film3);
+		System.out.println(films.get());
+		films.getMostPopular(2);
+	}
+
+	@Test
 	public void emptyNameTest() {
 		Film film = new Film(null, "A film without name", LocalDate.now(), 60);
 		assertThrows(ValidationException.class, () -> films.add(film));
