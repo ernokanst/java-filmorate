@@ -1,21 +1,19 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.ValidateService;
-
+import ru.yandex.practicum.filmorate.service.UserService;
 import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class UserTest {
 
-    ValidateService validateService = new ValidateService();
-    UserController users = new UserController(validateService);
+    @Autowired
+    UserService users;
 
     @Test
     public void allCorrectTest() {
