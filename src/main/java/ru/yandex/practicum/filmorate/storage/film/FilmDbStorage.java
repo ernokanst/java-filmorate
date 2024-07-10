@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.RatingStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -23,11 +24,13 @@ public class FilmDbStorage implements FilmStorage{
 
     private JdbcTemplate jdbcTemplate;
     private GenreStorage genreStorage;
+    private RatingStorage ratingStorage;
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreStorage genreStorage) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreStorage genreStorage, RatingStorage ratingStorage) {
         this.jdbcTemplate = jdbcTemplate;
         this.genreStorage = genreStorage;
+        this.ratingStorage = ratingStorage;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class FilmDbStorage implements FilmStorage{
             stmt.setString(2, film.getDescription());
             stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
             stmt.setInt(4, film.getDuration());
-            stmt.setInt(5, film.getMpa().get("id"));
+            stmt.setInt(5, film.getMpa().getId());
             return stmt;
         }, keyHolder);
         film.setId(keyHolder.getKey().intValue());
@@ -54,7 +57,7 @@ public class FilmDbStorage implements FilmStorage{
     @Override
     public Film update(Film film) {
         String query = "update films set name = ?, description = ?, releaseDate = ?, duration = ?, mpa = ? where film_id = ?";
-        jdbcTemplate.update(query, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa(), film.getId());
+        jdbcTemplate.update(query, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), film.getId());
         return film;
     }
 
@@ -99,14 +102,12 @@ public class FilmDbStorage implements FilmStorage{
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
-        Map<String, Integer> mpa = new HashMap<>();
-        mpa.put("id", resultSet.getInt("mpa"));
         Set<Genre> genres = new HashSet<>();
         String query = "select genre_id from film_genres where film_id = ?";
         for (Map<String, Object> g : jdbcTemplate.queryForList(query, resultSet.getInt("film_id"))) {
             genres.add(genreStorage.get((Integer) g.get("genre_id")));
         }
         return new Film(resultSet.getInt("film_id"), resultSet.getString("name"), resultSet.getString("description"),
-                resultSet.getDate("releaseDate").toLocalDate(), resultSet.getInt("duration"), mpa, genres);
+                resultSet.getDate("releaseDate").toLocalDate(), resultSet.getInt("duration"), ratingStorage.get(resultSet.getInt("mpa")), genres);
     }
 }

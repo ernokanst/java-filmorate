@@ -23,7 +23,7 @@ public class Film {
     private LocalDate releaseDate;
     private int duration;
     private Set<Genre> genres;
-    private Map<String, Integer> mpa;
+    private Rating mpa;
 
     public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;
@@ -32,7 +32,7 @@ public class Film {
         this.duration = duration;
     }
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration, Map<String, Integer> mpa, Set<Genre> genres) {
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration, Rating mpa, Set<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
