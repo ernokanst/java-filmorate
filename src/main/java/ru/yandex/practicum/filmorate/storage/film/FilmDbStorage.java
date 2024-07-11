@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-public class FilmDbStorage implements FilmStorage{
+public class FilmDbStorage implements FilmStorage {
 
     private JdbcTemplate jdbcTemplate;
     private GenreStorage genreStorage;
