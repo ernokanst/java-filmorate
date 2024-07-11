@@ -97,7 +97,7 @@ public class UserDbStorage implements UserStorage {
         return new User(resultSet.getInt("user_id"), resultSet.getString("email"), resultSet.getString("login"), resultSet.getString("name"), resultSet.getDate("birthday").toLocalDate());
     }
 
-    private List<Integer> mapRowToFriendship (ResultSet resultSet, int rowNum) throws SQLException {
+    private List<Integer> mapRowToFriendship(ResultSet resultSet, int rowNum) throws SQLException {
         return List.of(resultSet.getInt("user1"), resultSet.getInt("user2"));
     }
 }
