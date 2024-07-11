@@ -110,6 +110,6 @@ public class FilmDbStorage implements FilmStorage{
             genres.add(genreStorage.get((Integer) g.get("genre_id")));
         }
         return new Film(resultSet.getInt("film_id"), resultSet.getString("name"), resultSet.getString("description"),
-                resultSet.getDate("releaseDate").toLocalDate(), resultSet.getInt("duration"), ratingStorage.get(resultSet.getInt("mpa")), genres.stream().sorted((x1, x2) -> x1.getId() - x2.getId()).collect(Collectors.toList()));
+                resultSet.getDate("releaseDate").toLocalDate(), resultSet.getInt("duration"), genres.stream().sorted((x1, x2) -> x1.getId() - x2.getId()).collect(Collectors.toList()), ratingStorage.get(resultSet.getInt("mpa")));
     }
 }

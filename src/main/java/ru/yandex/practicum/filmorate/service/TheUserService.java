@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -23,7 +24,9 @@ public class TheUserService implements UserService {
 
     public User update(User user) {
         validateService.checkUser(user);
-        if (userStorage.get(user.getId()) == null) {
+        try {
+            userStorage.get(user.getId());
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователь не найден");
         }
         return userStorage.update(user);
@@ -34,35 +37,48 @@ public class TheUserService implements UserService {
     }
 
     public User getUser(Integer id) {
-        if (userStorage.get(id) == null) {
+        try {
+            userStorage.get(id);
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователь не найден");
         }
         return userStorage.get(id);
     }
 
     public void addFriends(Integer id, Integer friendId) {
-        if (userStorage.get(id) == null || userStorage.get(friendId) == null) {
+        try {
+            userStorage.get(id);
+            userStorage.get(friendId);
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователь не найден");
         }
         userStorage.addFriends(id, friendId);
     }
 
     public void deleteFriends(Integer id, Integer friendId) {
-        if (userStorage.get(id) == null || userStorage.get(friendId) == null) {
+        try {
+            userStorage.get(id);
+            userStorage.get(friendId);
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователь не найден");
         }
         userStorage.deleteFriends(id, friendId);
     }
 
     public List<User> getFriends(Integer id) {
-        if (userStorage.get(id) == null) {
+        try {
+            userStorage.get(id);
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователь не найден");
         }
         return userStorage.getFriends(id);
     }
 
     public List<User> getMutuals(Integer id, Integer otherId) {
-        if (userStorage.get(id) == null || userStorage.get(otherId) == null) {
+        try {
+            userStorage.get(id);
+            userStorage.get(otherId);
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователь не найден");
         }
         return userStorage.getMutuals(id, otherId);
