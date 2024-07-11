@@ -1,17 +1,14 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.RatingStorage;
-
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -91,13 +88,13 @@ public class FilmDbStorage implements FilmStorage{
     public List<Film> getMostPopular(int count) {
         List<Film> films = get();
         Map<Integer, Set<Integer>> likes = new LinkedHashMap<>();
+        for (Film f : films) {
+            likes.put(f.getId(), new HashSet<>());
+        }
         String query = "select film_id, user_id from likes";
         for (Map<String, Object> l : jdbcTemplate.queryForList(query)) {
             int id = (int) l.get("FILM_ID");
             int userId = (int) l.get("USER_ID");
-            if (!likes.containsKey(id)) {
-                likes.put(id, new HashSet<>());
-            }
             likes.get(id).add(userId);
         }
         return films.stream().sorted((x1, x2) -> likes.get(x2.getId()).size() - likes.get(x1.getId()).size()).limit(count).collect(Collectors.toList());
