@@ -29,7 +29,6 @@ class FilmTest {
 		films.add(film1);
 		films.add(film2);
 		films.add(film3);
-		System.out.println(films.get());
 		films.getMostPopular(2);
 	}
 

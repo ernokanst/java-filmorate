@@ -11,8 +11,7 @@ import java.util.*;
 @Service
 public class TheUserService implements UserService {
     @Autowired
-    //@Qualifier("userDbStorage")
-    @Qualifier("inMemoryUserStorage")
+    @Qualifier("userDbStorage")
     private UserStorage userStorage;
     @Autowired
     ValidateService validateService;

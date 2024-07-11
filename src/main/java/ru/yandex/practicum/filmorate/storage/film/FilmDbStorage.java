@@ -47,9 +47,11 @@ public class FilmDbStorage implements FilmStorage{
             return stmt;
         }, keyHolder);
         film.setId(keyHolder.getKey().intValue());
-        for (Genre g : film.getGenres()) {
-            String gQuery = "insert into film_genres(film_id, genre_id) values (?, ?)";
-            jdbcTemplate.update(gQuery, film.getId(), g.getId());
+        if (film.getGenres() != null) {
+            for (Genre g : film.getGenres()) {
+                String gQuery = "insert into film_genres(film_id, genre_id) values (?, ?)";
+                jdbcTemplate.update(gQuery, film.getId(), g.getId());
+            }
         }
         return film;
     }
@@ -108,6 +110,6 @@ public class FilmDbStorage implements FilmStorage{
             genres.add(genreStorage.get((Integer) g.get("genre_id")));
         }
         return new Film(resultSet.getInt("film_id"), resultSet.getString("name"), resultSet.getString("description"),
-                resultSet.getDate("releaseDate").toLocalDate(), resultSet.getInt("duration"), ratingStorage.get(resultSet.getInt("mpa")), genres);
+                resultSet.getDate("releaseDate").toLocalDate(), resultSet.getInt("duration"), ratingStorage.get(resultSet.getInt("mpa")), genres.stream().sorted((x1, x2) -> x1.getId() - x2.getId()).collect(Collectors.toList()));
     }
 }

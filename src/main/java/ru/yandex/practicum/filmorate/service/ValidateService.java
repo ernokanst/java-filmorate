@@ -21,6 +21,18 @@ public class ValidateService {
         if (film.getDuration() < 1) {
             throw new ValidationException("Продолжительность фильма не может быть отрицательной");
         }
+        if (film.getGenres() != null) {
+            film.getGenres().forEach(genre -> {
+                if (genre.getId() > 6 || genre.getId() < 1) {
+                    throw new ValidationException("Неизвестный жанр");
+                }
+            });
+        }
+        if (film.getMpa() != null) {
+            if (film.getMpa().getId() > 5 || film.getMpa().getId() < 1) {
+                throw new ValidationException("Неизвестный рейтинг");
+            }
+        }
     }
 
     public void checkUser(User user) throws ValidationException {

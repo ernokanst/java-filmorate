@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Rating;
+import ru.yandex.practicum.filmorate.service.RatingService;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.RatingStorage;
 
@@ -18,15 +19,15 @@ import java.util.List;
 @Slf4j
 public class RatingController {
     @Autowired
-    RatingStorage ratingStorage;
+    RatingService ratingService;
 
     @GetMapping
     public List<Rating> get() {
-        return ratingStorage.get();
+        return ratingService.get();
     }
 
     @GetMapping("/{id}")
     public Rating getGenre(@PathVariable Integer id) {
-        return ratingStorage.get(id);
+        return ratingService.get(id);
     }
 }

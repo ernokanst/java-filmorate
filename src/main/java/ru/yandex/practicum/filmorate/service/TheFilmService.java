@@ -17,8 +17,7 @@ public class TheFilmService implements FilmService {
     @Autowired
     private ValidateService validateService;
     @Autowired
-    //@Qualifier("userDbStorage")
-    @Qualifier("inMemoryUserStorage")
+    @Qualifier("userDbStorage")
     private UserStorage userStorage;
 
     public Film add(Film film) {

@@ -22,7 +22,7 @@ public class Film {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
     private int duration;
-    private Set<Genre> genres;
+    private List<Genre> genres;
     private Rating mpa;
 
     public Film(String name, String description, LocalDate releaseDate, int duration) {
@@ -32,7 +32,7 @@ public class Film {
         this.duration = duration;
     }
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration, Rating mpa, Set<Genre> genres) {
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration, Rating mpa, List<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
