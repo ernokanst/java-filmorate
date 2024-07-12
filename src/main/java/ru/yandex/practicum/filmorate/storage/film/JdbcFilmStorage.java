@@ -4,18 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Rating;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.rating.RatingStorage;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 @Primary
@@ -67,13 +62,13 @@ public class JdbcFilmStorage implements FilmStorage {
 
     @Override
     public List<Film> get() {
-        String query = "select film_id, name, description, releaseDate, duration, mpa from films";
+        String query = "select f.*, m.name as mpa_name from films as f left outer join mpa as m on f.mpa = m.mpa_id";
         return jdbcTemplate.query(query, this::mapRowToFilm);
     }
 
     @Override
     public Film get(Integer id) {
-        String query = "select film_id, name, description, releaseDate, duration, mpa from films where film_id = :id";
+        String query = "select f.*, m.name as mpa_name from films as f left outer join mpa as m on f.mpa = m.mpa_id where f.film_id = :id";
         return jdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), this::mapRowToFilm);
     }
 
@@ -93,7 +88,7 @@ public class JdbcFilmStorage implements FilmStorage {
 
     @Override
     public List<Film> getMostPopular(int count) {
-        String query = "SELECT * FROM films as f ORDER BY (select count(l.film_id) from likes as l where l.film_id = f.film_id) DESC";
+        String query = "select f.*, m.name as mpa_name from films as f left outer join mpa as m on f.mpa = m.mpa_id ORDER BY (select count(l.film_id) from likes as l where l.film_id = f.film_id) DESC";
         return jdbcTemplate.query(query, new MapSqlParameterSource().addValue("limit", count), this::mapRowToFilm);
     }
 
@@ -104,7 +99,7 @@ public class JdbcFilmStorage implements FilmStorage {
             Genre genre = jdbcTemplate.queryForObject("select genre_id, name from genres where genre_id = :id", new MapSqlParameterSource().addValue("id", (Integer) g.get("genre_id")), (ResultSet rs, int rn) -> new Genre(rs.getInt("genre_id"), rs.getString("name")));
             genres.add(genre);
         }
-        Rating mpa = jdbcTemplate.queryForObject("select mpa_id, name from mpa where mpa_id = :id", new MapSqlParameterSource().addValue("id", resultSet.getInt("mpa")), (ResultSet rs, int rn) -> new Rating(rs.getInt("mpa_id"), rs.getString("name")));
+        Rating mpa = new Rating(resultSet.getInt("mpa"), resultSet.getString("mpa_name"));
         return new Film(resultSet.getInt("film_id"), resultSet.getString("name"), resultSet.getString("description"),
                 resultSet.getDate("releaseDate").toLocalDate(), resultSet.getInt("duration"), genres, mpa);
     }

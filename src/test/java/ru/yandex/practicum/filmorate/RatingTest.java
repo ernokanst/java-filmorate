@@ -3,19 +3,11 @@ package ru.yandex.practicum.filmorate;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.test.context.ContextConfiguration;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Rating;
-import ru.yandex.practicum.filmorate.storage.film.JdbcFilmStorage;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.genre.JdbcGenreStorage;
 import ru.yandex.practicum.filmorate.storage.rating.JdbcRatingStorage;
-import ru.yandex.practicum.filmorate.storage.user.JdbcUserStorage;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest

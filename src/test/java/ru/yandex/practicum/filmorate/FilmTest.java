@@ -4,20 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.test.context.ContextConfiguration;
 import ru.yandex.practicum.filmorate.model.*;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.genre.JdbcGenreStorage;
 import ru.yandex.practicum.filmorate.storage.rating.JdbcRatingStorage;
-import ru.yandex.practicum.filmorate.storage.rating.RatingStorage;
 import ru.yandex.practicum.filmorate.storage.film.JdbcFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.JdbcUserStorage;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
