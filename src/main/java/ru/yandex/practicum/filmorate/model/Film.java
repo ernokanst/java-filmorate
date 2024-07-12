@@ -49,8 +49,8 @@ public class Film {
         values.put("description", description);
         values.put("releaseDate", releaseDate);
         values.put("duration", duration);
-        values.put("genres", genres!=null?genres.stream().map(Genre::getId).collect(Collectors.toSet()):null);
-        values.put("mpa", mpa!=null?mpa.getId():null);
+        values.put("genres", genres != null ? genres.stream().map(Genre::getId).collect(Collectors.toSet()) : null);
+        values.put("mpa", mpa != null ? mpa.getId() : null);
         return values;
     }
 }
