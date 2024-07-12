@@ -1,12 +1,25 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.rating.RatingStorage;
+
 import java.time.LocalDate;
 
 @Component
 public class ValidateService {
+
+    private GenreStorage genreStorage;
+    private RatingStorage ratingStorage;
+
+    @Autowired
+    public ValidateService(GenreStorage genreStorage, RatingStorage ratingStorage) {
+        this.genreStorage = genreStorage;
+        this.ratingStorage = ratingStorage;
+    }
 
     public void checkFilm(Film film) throws ValidationException {
         if (film.getName() == null || film.getName().isBlank()) {
@@ -23,13 +36,13 @@ public class ValidateService {
         }
         if (film.getGenres() != null) {
             film.getGenres().forEach(genre -> {
-                if (genre.getId() > 6 || genre.getId() < 1) {
+                if (genreStorage.get(genre.getId()) == null) {
                     throw new ValidationException("Неизвестный жанр");
                 }
             });
         }
         if (film.getMpa() != null) {
-            if (film.getMpa().getId() > 5 || film.getMpa().getId() < 1) {
+            if (ratingStorage.get(film.getMpa().getId()) == null) {
                 throw new ValidationException("Неизвестный рейтинг");
             }
         }
@@ -51,5 +64,12 @@ public class ValidateService {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
+    }
+
+    public void checkUpdateUser(User user) throws ValidationException {
+        if (user.getId() == null) {
+            throw new ValidationException("Отсутстсвует идентификатор пользователя");
+        }
+        checkUser(user);
     }
 }

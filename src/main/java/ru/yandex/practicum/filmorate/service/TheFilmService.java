@@ -12,12 +12,10 @@ import java.util.*;
 @Service
 public class TheFilmService implements FilmService {
     @Autowired
-    @Qualifier("filmDbStorage")
     private FilmStorage filmStorage;
     @Autowired
     private ValidateService validateService;
     @Autowired
-    @Qualifier("userDbStorage")
     private UserStorage userStorage;
 
     public Film add(Film film) {
