@@ -49,9 +49,9 @@ class FilmTest {
 		Film film1 = new Film("Movie", "A movie", LocalDate.now(), 60, Set.of(new Genre(1, "Комедия")), new Rating(1, "G"));
 		Film film2 = new Film("New movie", "A movie about something", LocalDate.now(), 100, Set.of(new Genre(6, "Боевик")), new Rating(5, "NC-17"));
 		Film film3 = new Film("Movie the third", "A movie about something else", LocalDate.now(), 90, Set.of(new Genre(4, "Триллер"), new Genre(5, "Документальный")), new Rating(3, "PG-13"));
-		films.add(film1);
-		films.add(film2);
-		films.add(film3);
+		film1.setId(films.add(film1).getId());
+		film2.setId(films.add(film2).getId());
+		film3.setId(films.add(film3).getId());
 		List<Film> getFilms = films.get();
 		assertEquals(getFilms, List.of(film1, film2, film3));
 	}

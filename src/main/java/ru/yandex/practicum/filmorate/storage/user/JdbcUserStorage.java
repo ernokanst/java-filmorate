@@ -2,10 +2,7 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
@@ -28,7 +25,8 @@ public class JdbcUserStorage implements UserStorage {
     @Override
     public User add(User user) {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
-        String query = "insert into users(email, login, name, birthday) values (:email, :login, :name, :birthday)";
+        String query = "insert into users(email, login, name, birthday)" +
+                " values (:email, :login, :name, :birthday)";
         jdbcTemplate.update(query, new BeanPropertySqlParameterSource(user), generatedKeyHolder);
         user.setId(generatedKeyHolder.getKey().intValue());
         return user;
@@ -36,7 +34,9 @@ public class JdbcUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        String query = "update users set email = :email, login = :login, name = :name, birthday = :birthday where user_id = :id";
+        String query = "update users set " +
+                "email = :email, login = :login, name = :name, birthday = :birthday" +
+                " where user_id = :id";
         jdbcTemplate.update(query, new BeanPropertySqlParameterSource(user));
         return user;
     }
@@ -51,8 +51,8 @@ public class JdbcUserStorage implements UserStorage {
     public User get(Integer id) {
         String query = "select user_id, email, login, name, birthday from users where user_id = :id";
         try {
-            return jdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), this::mapRowToUser);
-        } catch (EmptyResultDataAccessException e) {
+            return jdbcTemplate.query(query, new MapSqlParameterSource().addValue("id", id), this::mapRowToUser).get(0);
+        } catch (Exception e) {
             return null;
         }
     }
@@ -60,14 +60,16 @@ public class JdbcUserStorage implements UserStorage {
     @Override
     public void addFriends(Integer id, Integer friendId) {
         MapSqlParameterSource params = new MapSqlParameterSource().addValue("user1", id).addValue("user2", friendId);
-        String query = "insert into friendships(user1, user2) values (:user1, :user2)";
+        String query = "insert into friendships(user1, user2)" +
+                " values (:user1, :user2)";
         jdbcTemplate.update(query, params);
     }
 
     @Override
     public void deleteFriends(Integer id, Integer friendId) {
         MapSqlParameterSource params = new MapSqlParameterSource().addValue("user1", id).addValue("user2", friendId);
-        String query = "delete from friendships where user1 = :user1 and user2 = :user2";
+        String query = "delete from friendships" +
+                " where user1 = :user1 and user2 = :user2";
         jdbcTemplate.update(query, params);
     }
 

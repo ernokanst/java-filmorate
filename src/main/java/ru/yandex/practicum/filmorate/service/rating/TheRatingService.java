@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.rating;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,12 +8,12 @@ import ru.yandex.practicum.filmorate.storage.rating.RatingStorage;
 import java.util.List;
 
 @Service
-public class RatingService {
+public class TheRatingService implements RatingService {
 
     private RatingStorage ratingStorage;
 
     @Autowired
-    public RatingService(RatingStorage ratingStorage) {
+    public TheRatingService(RatingStorage ratingStorage) {
         this.ratingStorage = ratingStorage;
     }
 

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.rating;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -28,10 +27,14 @@ public class JdbcRatingStorage implements RatingStorage {
     public Rating get(Integer id) {
         String query = "select mpa_id, name from mpa where mpa_id = :id";
         try {
-            return jdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), this::mapRowToRating);
-        } catch (EmptyResultDataAccessException e) {
+            return jdbcTemplate.query(query, new MapSqlParameterSource().addValue("id", id), this::mapRowToRating).get(0);
+        } catch (Exception e) {
             return null;
         }
+    }
+
+    public boolean check(Rating mpa) {
+        return get(mpa.getId()) != null;
     }
 
     private Rating mapRowToRating(ResultSet resultSet, int rowNum) throws SQLException {
