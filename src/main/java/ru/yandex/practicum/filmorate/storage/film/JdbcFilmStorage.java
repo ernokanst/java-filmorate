@@ -131,7 +131,11 @@ public class JdbcFilmStorage implements FilmStorage {
                 }
             }
         }
-        return assembled;
+        if (count < assembled.size()) {
+            return assembled.subList(0, count);
+        } else {
+            return assembled;
+        }
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {

@@ -88,6 +88,8 @@ class FilmTest {
 		assertNotEquals(mostPopular, List.of(film1, film2, film3));
 		mostPopular = films.getMostPopular(1000);
 		assertEquals(mostPopular, List.of(film3, film2, film1));
+		mostPopular = films.getMostPopular(2);
+		assertEquals(mostPopular, List.of(film3, film2));
 		films.deleteLike(film3.getId(), user1.getId());
 		films.deleteLike(film3.getId(), user2.getId());
 		mostPopular = films.getMostPopular(3);
