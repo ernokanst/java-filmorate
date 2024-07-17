@@ -40,4 +40,11 @@ public class ValidateService {
             user.setName(user.getLogin());
         }
     }
+
+    public void checkUpdateUser(User user) throws ValidationException {
+        if (user.getId() == null) {
+            throw new ValidationException("Отсутстсвует идентификатор пользователя");
+        }
+        checkUser(user);
+    }
 }

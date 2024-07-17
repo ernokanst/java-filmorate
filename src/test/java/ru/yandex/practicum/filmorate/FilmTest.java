@@ -1,63 +1,98 @@
 package ru.yandex.practicum.filmorate;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.test.context.ContextConfiguration;
 import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.storage.genre.JdbcGenreStorage;
+import ru.yandex.practicum.filmorate.storage.rating.JdbcRatingStorage;
+import ru.yandex.practicum.filmorate.storage.film.JdbcFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.JdbcUserStorage;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
-@SpringBootTest
+@JdbcTest
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@ContextConfiguration(classes = {JdbcFilmStorage.class, JdbcUserStorage.class, JdbcGenreStorage.class, JdbcRatingStorage.class})
 class FilmTest {
 
-	@Autowired
-	FilmService films;
+	private final JdbcFilmStorage films;
+	private final JdbcUserStorage users;
 
 	@Test
-	public void allCorrectTest() {
-		Film film = new Film("Movie", "A movie", LocalDate.now(), 60);
-		assertDoesNotThrow(() -> films.add(film));
+	public void testAdd() {
+		Film film = new Film("Movie", "A movie", LocalDate.now(), 60, Set.of(new Genre(1, "Комедия")), new Rating(1, "G"));
+		Film addedFilm = films.add(film);
+		assertEquals(1, addedFilm.getId());
 	}
 
 	@Test
-	public void emptyNameTest() {
-		Film film = new Film(null, "A film without name", LocalDate.now(), 60);
-		assertThrows(ValidationException.class, () -> films.add(film));
-		film.setName("");
-		assertThrows(ValidationException.class, () -> films.add(film));
-		film.setName(" ");
-		assertThrows(ValidationException.class, () -> films.add(film));
+	public void testUpdate() {
+		Film film = new Film("Movie", "A movie", LocalDate.now(), 60, Set.of(new Genre(1, "Комедия")), new Rating(1, "G"));
+		film = films.add(film);
+		film.setName("New movie");
+		film.setDescription("A movie about something");
+		film.setReleaseDate(LocalDate.of(2000, 1, 1));
+		film.setDuration(100);
+		film.setMpa(new Rating(5, "NC-17"));
+		film.setGenres(Set.of(new Genre(6, "Боевик")));
+		Film addedFilm = films.update(film);
+		assertEquals(film, addedFilm);
 	}
 
 	@Test
-	public void wrongDescriptionTest() {
-		Film film = new Film("Bee Movie",
-				"According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
-				LocalDate.of(2007, 11,2), 91);
-		assertThrows(ValidationException.class, () -> films.add(film));
-		film.setDescription("B".repeat(201));
-		assertThrows(ValidationException.class, () -> films.add(film));
-		film.setDescription("B".repeat(200));
-		assertDoesNotThrow(() -> films.add(film));
+	public void testGetAll() {
+		Film film1 = new Film("Movie", "A movie", LocalDate.now(), 60, Set.of(new Genre(1, "Комедия")), new Rating(1, "G"));
+		Film film2 = new Film("New movie", "A movie about something", LocalDate.now(), 100, Set.of(new Genre(6, "Боевик")), new Rating(5, "NC-17"));
+		Film film3 = new Film("Movie the third", "A movie about something else", LocalDate.now(), 90, Set.of(new Genre(4, "Триллер"), new Genre(5, "Документальный")), new Rating(3, "PG-13"));
+		film1.setId(films.add(film1).getId());
+		film2.setId(films.add(film2).getId());
+		film3.setId(films.add(film3).getId());
+		List<Film> getFilms = films.get();
+		assertEquals(getFilms, List.of(film1, film2, film3));
 	}
 
 	@Test
-	public void wrongDateTest() {
-		Film film = new Film("Film", "A film with wrong date", LocalDate.of(1895, 12, 27), 60);
-		assertThrows(ValidationException.class, () -> films.add(film));
-		film.setReleaseDate(LocalDate.of(1895, 12, 28));
-		assertDoesNotThrow(() -> films.add(film));
+	public void testGetOne() {
+		Film film1 = new Film("Movie", "A movie", LocalDate.now(), 60, Set.of(new Genre(1, "Комедия")), new Rating(1, "G"));
+		Film film2 = new Film("New movie", "A movie about something", LocalDate.now(), 100, Set.of(new Genre(6, "Боевик")), new Rating(5, "NC-17"));
+		Film film3 = new Film("Movie the third", "A movie about something else", LocalDate.now(), 90, Set.of(new Genre(4, "Триллер"), new Genre(5, "Документальный")), new Rating(3, "PG-13"));
+		films.add(film1);
+		film2.setId(films.add(film2).getId());
+		films.add(film3);
+		Film getFilm = films.get(film2.getId());
+		assertEquals(getFilm, film2);
 	}
 
 	@Test
-	public void wrongDurationTest() {
-		Film film = new Film("Film", "A film with wrong duration", LocalDate.now(), -60);
-		assertThrows(ValidationException.class, () -> films.add(film));
-		film.setDuration(0);
-		assertThrows(ValidationException.class, () -> films.add(film));
-		film.setDuration(1);
-		assertDoesNotThrow(() -> films.add(film));
+	public void testLikes() {
+		Film film1 = new Film("Movie", "A movie", LocalDate.now(), 60, Set.of(new Genre(1, "Комедия")), new Rating(1, "G"));
+		Film film2 = new Film("New movie", "A movie about something", LocalDate.now(), 100, Set.of(new Genre(6, "Боевик")), new Rating(5, "NC-17"));
+		Film film3 = new Film("Movie the third", "A movie about something else", LocalDate.now(), 90, Set.of(new Genre(4, "Триллер"), new Genre(5, "Документальный")), new Rating(3, "PG-13"));
+		User user1 = new User("email@email.com", "user", "John Doe", LocalDate.of(2000, 1, 1));
+		User user2 = new User("diffirent_email@email.com", "login", "Jane Doe", LocalDate.of(1987, 6, 5));
+		film1.setId(films.add(film1).getId());
+		film2.setId(films.add(film2).getId());
+		film3.setId(films.add(film3).getId());
+		user1.setId(users.add(user1).getId());
+		user2.setId(users.add(user2).getId());
+		films.addLike(film3.getId(), user1.getId());
+		films.addLike(film3.getId(), user2.getId());
+		films.addLike(film2.getId(), user1.getId());
+		List<Film> mostPopular = films.getMostPopular(3);
+		assertEquals(mostPopular, List.of(film3, film2, film1));
+		assertNotEquals(mostPopular, List.of(film1, film2, film3));
+		mostPopular = films.getMostPopular(1000);
+		assertEquals(mostPopular, List.of(film3, film2, film1));
+		mostPopular = films.getMostPopular(2);
+		assertEquals(mostPopular, List.of(film3, film2));
+		films.deleteLike(film3.getId(), user1.getId());
+		films.deleteLike(film3.getId(), user2.getId());
+		mostPopular = films.getMostPopular(3);
+		assertEquals(mostPopular, List.of(film2, film1, film3));
 	}
 }
